@@ -1,0 +1,28 @@
+body{
+    background: #ad5389;  
+    background: -webkit-linear-gradient(to right, #3c1053, #ad5389);  
+    background: linear-gradient(to right, #3c1053, #ad5389);
+}
+#chat {
+    height: 350px;
+    overflow-y: scroll;
+}
+.message {
+    margin: 20px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background: white;
+}
+#contentWrap {
+    display: none;
+  }
+  
+.error {
+    color: red;
+}
+  
+.whisper {
+    color: gray;
+    font-style: italic;
+}
