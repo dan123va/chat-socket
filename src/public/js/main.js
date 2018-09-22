@@ -42,7 +42,7 @@ $(function () {
       if (message.text) {
         return (`
       <div class="message">
-          <p> ${message.text}<p>
+          <p>${message.nickname} : ${message.text}<p>
       </div>
       `)
       }

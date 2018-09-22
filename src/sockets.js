@@ -9,8 +9,6 @@ module.exports = function (io) {
 
     io.on('connection', (socket) => {
         socket.on('new user', (data, cb) => {
-            console.log(data);
-            
             if (data in users) {
                 cb(false);
             } else {
@@ -20,13 +18,11 @@ module.exports = function (io) {
                 updateNicknames();
             }
         });
-        console.log('El cliente con IP: ' + socket.handshake.address + ' se ha conectado.');
+        //console.log('El cliente con IP: ' + socket.handshake.address + ' se ha conectado.');
         socket.on('send message', (data) => {
+            data.nickname = socket.nickname
             messages.push(data)
-            messages.map((message, index) => {
-                console.log(socket.nickname);
-                message.nickname = socket.nickname
-            })
+            console.log(data);
             io.sockets.emit('new message', {
                 msg: messages
             })
