@@ -11,21 +11,14 @@ $(function () {
 
   const $users = $('#usernames');
 
-  $nickForm.submit(e => {
-    e.preventDefault();
-    socket.emit('new user', $nickname.val(), data => {
-      if (data) {
-        $('#nickWrap').hide();
-        $('#contentWrap').show();
-      } else {
-        $nickError.html(`
-            <div class="alert alert-danger">
-              That username already Exists.
-            </div>
-          `);
-      }
-    });
-    $nickname.val('');
+  function displayMsg(data) {
+    $chat.append(`<p class="msg"><b>${data.nick}</b>: ${data.msg}</p>`);
+  }
+
+  socket.on('load old msgs', msgs => {
+    for (let i = msgs.length - 1; i >= 0; i--) {
+      displayMsg(msgs[i]);
+    }
   });
 
   $messageForm.submit(e => {
@@ -39,7 +32,7 @@ $(function () {
     })
     $messageBox.val("")
   })
-  
+
   socket.on('new message', (data) => {
     var html = data.msg.map((message, index) => {
       if (message.text) {
@@ -57,16 +50,21 @@ $(function () {
 
   })
 
-  socket.on('whisper', data => {
-    var html =  (`
-      <div class="message">
-          <p>${data.nick} : ${data.msg}<p>
-      </div>
-      `)
-
-    var div_msgs = document.getElementById('chat')
-    div_msgs.innerHTML = html
-    div_msgs.scrollTop = div_msgs.scrollHeight
+  $nickForm.submit(e => {
+    e.preventDefault();
+    socket.emit('new user', $nickname.val(), data => {
+      if (data) {
+        $('#nickWrap').hide();
+        $('#contentWrap').show();
+      } else {
+        $nickError.html(`
+            <div class="alert alert-danger">
+              That username already Exists.
+            </div>
+          `);
+      }
+    });
+    $nickname.val('');
   });
 
   socket.on('usernames', data => {
@@ -75,5 +73,17 @@ $(function () {
       html += `<button type="submit" value=${data[i]}><i class="fas fa-user"></i>${data[i]}</button><br>`
     }
     $users.html(html);
+  });
+
+  socket.on('whisper', data => {
+    var html = (`
+      <div class="message">
+          <p>${data.nick} : ${data.msg}<p>
+      </div>
+      `)
+
+    var div_msgs = document.getElementById('chat')
+    div_msgs.innerHTML = html
+    div_msgs.scrollTop = div_msgs.scrollHeight
   });
 })

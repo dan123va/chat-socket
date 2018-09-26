@@ -1,3 +1,4 @@
+const Chat = require('./models/chat')
 module.exports = function (io) {
 
     var messages = [{
@@ -5,9 +6,15 @@ module.exports = function (io) {
         text: '',
         nickname: ''
     }]
-    
+
     let users = {};
-    io.on('connection', (socket) => {
+
+    io.on('connection', async (socket) => {
+
+        let messagesdb = await Chat.find({}).limit(8).sort('-created');
+
+        socket.emit('load old msgs', messagesdb);
+        
         socket.on('new user', (data, cb) => {
             if (data in users) {
                 cb(false);
@@ -20,7 +27,7 @@ module.exports = function (io) {
         });
 
         //console.log('El cliente con IP: ' + socket.handshake.address + ' se ha conectado.');
-        socket.on('send message', (data, cb) => {
+        socket.on('send message', async (data, cb) => {
             data.nickname = socket.nickname
             var dat = data.text
             var msg = dat.trim();
@@ -42,6 +49,12 @@ module.exports = function (io) {
                     cb('Error! Please enter your message');
                 }
             } else {
+                var newMsg = new Chat({
+                    msg: data.text,
+                    nick: data.nickname
+                });
+                await newMsg.save();
+
                 messages.push(data)
                 io.sockets.emit('new message', {
                     msg: messages
