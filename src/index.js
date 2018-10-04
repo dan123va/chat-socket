@@ -1,11 +1,11 @@
-const express = require('express')
-const app = express()
-const server = require('http').Server(app)
-const io = require('socket.io')(server)
-const mongoose = require('mongoose')
-const path = require('path')
-
-mongoose.connect('mongodb://localhost/chat')
+const express = require('express'),
+      app = express(),
+      server = require('http').Server(app),
+      io = require('socket.io')(server),
+      mongoose = require('mongoose'),
+      path = require('path')
+      
+mongoose.connect('mongodb://localhost/chat', { useNewUrlParser: true })
   .then(db => console.log('db connected'))
   .catch(err => console.log(err));
 

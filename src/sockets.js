@@ -1,4 +1,5 @@
 const Chat = require('./models/chat')
+const chatPrivado = require('./models/chat-privado')
 module.exports = function (io) {
 
     var messages = [{
@@ -14,7 +15,7 @@ module.exports = function (io) {
         let messagesdb = await Chat.find({}).limit(8).sort('-created');
 
         socket.emit('load old msgs', messagesdb);
-        
+
         socket.on('new user', (data, cb) => {
             if (data in users) {
                 cb(false);
@@ -28,20 +29,36 @@ module.exports = function (io) {
 
         //console.log('El cliente con IP: ' + socket.handshake.address + ' se ha conectado.');
         socket.on('send message', async (data, cb) => {
-            data.nickname = socket.nickname
+
+            data.nickname = socket.nickname;
             var dat = data.text
-            var msg = dat.trim();
+            var msg = dat.trim()
+
             if (msg.substr(0, 3) === '/w ') {
                 msg = msg.substr(3);
                 var index = msg.indexOf(' ');
                 if (index !== -1) {
+
                     var name = msg.substring(0, index);
                     var msg = msg.substring(index + 1);
+
                     if (name in users) {
+
+                        var user1 = socket.nickname[0]
+                        var user2 = name[0]
+                        var idM = user1 + user2
+
+                        var newMsg = new chatPrivado({
+                            idM: idM,
+                            msg: data.text,
+                            nick: data.nickname
+                        })
+                        await newMsg.save();
                         users[name].emit('whisper', {
                             msg: msg,
                             nick: data.nickname
-                        });
+                        })
+
                     } else {
                         cb('Error! Enter a valid User');
                     }
@@ -49,10 +66,11 @@ module.exports = function (io) {
                     cb('Error! Please enter your message');
                 }
             } else {
+
                 var newMsg = new Chat({
                     msg: data.text,
                     nick: data.nickname
-                });
+                })
                 await newMsg.save();
 
                 messages.push(data)

@@ -10,7 +10,7 @@ $(function () {
   const $nickname = $('#nickname');
 
   const $users = $('#usernames');
-
+  
   function displayMsg(data) {
     $chat.append(`<p class="msg"><b>${data.nick}</b>: ${data.msg}</p>`);
   }
@@ -54,8 +54,8 @@ $(function () {
     e.preventDefault();
     socket.emit('new user', $nickname.val(), data => {
       if (data) {
-        $('#nickWrap').hide();
-        $('#contentWrap').show();
+        $('#nickWrap').hide()
+        $('#contentWrap').show()
       } else {
         $nickError.html(`
             <div class="alert alert-danger">
@@ -64,16 +64,18 @@ $(function () {
           `);
       }
     });
-    $nickname.val('');
+    $nickname.val('')
   });
-
+  
+  
+  
   socket.on('usernames', data => {
     let html = '';
     for (i = 0; i < data.length; i++) {
-      html += `<button type="submit" value=${data[i]}><i class="fas fa-user"></i>${data[i]}</button><br>`
+      html += `<button type="submit" id='haa' value='${data[i]}'><i class="fas fa-user"></i>${data[i]}</button><br>`
     }
     $users.html(html);
-  });
+  })
 
   socket.on('whisper', data => {
     var html = (`
@@ -85,5 +87,5 @@ $(function () {
     var div_msgs = document.getElementById('chat')
     div_msgs.innerHTML = html
     div_msgs.scrollTop = div_msgs.scrollHeight
-  });
+  })
 })
