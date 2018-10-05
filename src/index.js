@@ -5,7 +5,7 @@ const express = require('express'),
       mongoose = require('mongoose'),
       path = require('path')
       
-mongoose.connect('mongodb://localhost/chat', { useNewUrlParser: true })
+mongoose.connect('mongodb://liberti:liberti1@ds223653.mlab.com:23653/chat-database', { useNewUrlParser: true })
   .then(db => console.log('db connected'))
   .catch(err => console.log(err));
 
