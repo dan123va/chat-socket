@@ -1,5 +1,5 @@
 $(function () {
-  var socket = io.connect('http://localhost:3000', { 'forceNew': true })
+  var socket = io.connect('https://chat-liberti.herokuapp.com', { 'forceNew': true })
 
   const $messageForm = $('#message-form')
   const $messageBox = $('#message')
